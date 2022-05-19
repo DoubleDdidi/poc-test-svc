@@ -3,6 +3,7 @@ kind: Component
 metadata:
   name: "AccenturePoc"
 spec:
+  type: openapi
   tags:
     - spotify
     - rest
