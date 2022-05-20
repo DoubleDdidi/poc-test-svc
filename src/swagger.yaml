@@ -14,7 +14,7 @@ paths:
       parameters:
       - name: "valor"
         in: "path"
-        description: "Valor que será convertido"
+        description: "Valor que sera convertido"
         required: true
         type: "number"
       responses:
