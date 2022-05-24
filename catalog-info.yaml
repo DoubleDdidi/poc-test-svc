@@ -19,326 +19,120 @@ spec:
   owner: user:guest
   dependsOn: accenture-poc-svc
   definition: |
-    swagger: '2.0'
-info:
-  description: "The current definition of API Rest corresponds to MAPFRE's Business API"
-  version: 1.0.0
-  title: API Login Autoservicio
-  termsOfService: "http://swagger.io/terms/"
-  contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: apisb.mapfre.com
-basePath: /pry/api/clientSelf/authentications
-tags:
-  - name: Authentication
-    description: Authentication Services
-schemes:
-  - http
-paths:
-  ## AUTENTICACIÓN  
-  /login:
-    post:
-      tags:
-        - Authentication
-      security:
-        - Authorization: []
-        - bearerAuth: []
-      summary: 'Authentication Service (login)'
-      description: 'Authentication service (login). Service that will invoke cognito to check the existence of the user in the Paraguay Self-Service platform. It will return the same data and codes that will be sent as a response by this service.'
-      operationId: 'login'
-      consumes: 
-      - application/json
-      parameters:
-      - name: Accept-Language
-        description: Language
-        in: header
-        required: true
-        type: string
-      - name: body
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/Login'
-      produces: 
-      - application/json
-      responses:
-        201:
-          description: "successful operation"
-          schema: 
-            $ref: '#/definitions/CALogin' 
-        400:
-          description: Request error
-          schema:
-            $ref: '#/definitions/Error'
-        401:
-          description: Not authorized
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: Not Found
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Uncontrolled error
-          schema:
-            $ref: '#/definitions/Error'
-  /logout:
-    post:
-      tags:
-        - Autenticación
-      security:
-        - bearerAuth: []
-      summary: 'Authentication service (logout)'
-      description: 'Authentication service (logout)'
-      operationId: 'logout'
-      parameters:
-      - name: Accept-Language
-        description: Language
-        in: header
-        required: true
-        type: string
-        enum: 
-          - es-ES 
-      - name: logged_user_id
-        in: header
-        type: string
-        required: true
-        description: Identifier of the logged-in user corresponding to the user_token of the authentication header
-      produces: 
-      - application/json
-      responses:
-        200:
-          description: successful operation
-        400:
-          description: Request error
-          schema:
-            $ref: '#/definitions/Error'
-        401:
-          description: Not authorized
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: Not Found
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Uncontrolled error
-          schema:
-            $ref: '#/definitions/Error'
- 
-  
-securityDefinitions:
-  name:
-    type: apiKey
-    name: api_key
-    in: query
-  Authorization:
-    type: basic
-  bearerAuth:
-    type: apiKey
-    name: Authorization
-    in: header 
-  mapfre_auth:
-    type: oauth2
-    authorizationUrl: http://auth.mapfre.com/oauth/
-    flow: implicit
-    scopes:
-      read: Grants read access
-      write: Grants write access
-      admin: Grants access to admin operations
-definitions:
-  Error:
-    required:
-    - code
-    - message
-    - type
-    - component
-    - application
-    - timestamp
-    - errors
-    properties:
-      code:
-        description: Error code
-        example: '403'
-        type: string
-      message:
-        description: Error description
-        example: Internal error in the service
-        type: string
-      type:
-        description: Error type
-        example: Null pointer
-        type: string
-      context:
-        description: Error context
-        example: Process query action
-        type: string
-      exception:
-        description: Exception
-        example: NullPointerException
-        type: string
-      component:
-        description: Error component
-        example: ProcessImpl
-        type: string
-      application:
-        description: Error application
-        example: Process_Backend
-        type: string
-      timestamp:
-        description: Error time
-        example: '2019-01-13T18:27:41.511Z'
-        type: string
-        format: date-time
-      errors:
-        description: Error list
-        type: array
-        items:
-          $ref: "#/definitions/ErrorComponent"
-      stacktrace:
-        $ref: "#/definitions/StackTrace"
-  ErrorComponent:
-    required:
-    - code
-    properties:
-      code:
-        description: Error code
-        example: '403'
-        type: string
-      message:
-        description: Error message
-        example: Internal error
-        type: string
-      component:
-        description: Error component
-        example: ProcessImpl
-        type: string
-      rootcase:
-        description: Error cause
-        example: NullPointerException
-        type: string
-      info:
-        description: Error information
-        type: array
-        items:
-          $ref: "#/definitions/ErrorInfo"
-  ErrorInfo:
-    properties:
-      key:
-        description: Key
-        example: key
-        type: string
-      value:
-        description: Value
-        example: value
-        type: string
-  StackTrace:
-    description: Error trace
-    properties:
-      declaringClass:
-        description: Error java class
-        example: com.mapfre.gaia.ProcessImpl
-        type: string
-      methodName:
-        description: Method name
-        example: processAction
-        type: string
-      fileName:
-        description: File name.
-        example: ProccessImpl.java
-        type: string
-      lineNumber:
-        description: Error line number in the java class
-        example: '123'
-        type: string
-  Login:
-    type: object
-    description: "Objeto que encapsula los datos para la solicitud de login"
-    properties:
-      userPassLogin:
-        $ref: '#/definitions/UserPassLogin'
-      pinLogin:
-        $ref: '#/definitions/PinLogin'
-  UserPassLogin:
-    type: object
-    description: "Objeto que encapsula la credenciales de inicio de sesión a través de usuario y contraseña"
-    properties:
-      identificationDocumentType:
-        type: string
-        description: 'Identification document type'
-      identificationDocumentNumber:
-        type: string
-        description: 'Identification document number associated to the user'
-      password:
-        type: string
-        format: password
-        description: 'User password'  
-  PinLogin:
-    type: object
-    description: "Objeto que encapsula la información necesaria para realizar el login mediante PIN recibido"
-    properties:
-      identificationDocumentType:
-        type: string
-        description: 'Identification document type'
-      identificationDocumentNumber:
-        type: string
-        description: 'Identification document number associated to the user'
-      birthdate:
-        type: string
-        format: date-time
-        description: "User birthdate"
-      accessPin:
-        type: string
-        description: "Access PIN of the user" 
-  CASecurityTokens:
-    type: object
-    description: "Object that encapsulates security token information as returned by the CA API"
-    properties: 
-      token:
-        type: string
-        description: "Security token returned after login (JWT)"
-      exp:
-        type: number
-        description: "Token expiration time"
-      refreshToken:
-        type: string
-        description: "Refresh token"
-  CALogin:
-    type: object
-    description: "Object that encapsulates the login response as it is returned by the CA API"
-    properties:
-      securityTokens:
-        $ref: "#/definitions/CASecurityTokens"
-      payload:
-        $ref: "#/definitions/LoginUserInfo" 
-  UserInfo:
-    type: object
-    description: 'Objeto que encapsula la información básica de un cliente'
-    properties:
-      userTokenId:
-        type: string
-        description: 'Identificador único del usario'
-      tokenClientId:
-        type: string
-        description: 'Identificador único del cliente'
-  LoginUserInfo:
-    type: object
-    description: "Objeto que encapsula la respuesta del servicio de login"
-    properties:
-      userInfo:
-        $ref: "#/definitions/UserInfo" 
-      firstAccess: 
-        type: boolean
-        description: "Flag booleano que indica si es la primera vez que accede"
+    type: openapi
+  lifecycle: experimental
+  owner: user:guest
+  dependsOn: accenture-poc-svc
+  definition: |
+    openapi: "3.0.0"
+    info:
+      version: 1.0.0
+      title: Swagger Petstore
+      license:
+        name: MIT
+    servers:
+      - url: http://petstore.swagger.io/v1
+    paths:
+      /pets:
+        get:
+          summary: List all pets
+          operationId: listPets
+          tags:
+            - pets
+          parameters:
+            - name: limit
+              in: query
+              description: How many items to return at one time (max 100)
+              required: false
+              schema:
+                type: integer
+                format: int32
+          responses:
+            '200':
+              description: A paged array of pets
+              headers:
+                x-next:
+                  description: A link to the next page of responses
+                  schema:
+                    type: string
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Pets"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+        post:
+          summary: Create a pet
+          operationId: createPets
+          tags:
+            - pets
+          responses:
+            '201':
+              description: Null response
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+      /pets/{petId}:
+        get:
+          summary: Info for a specific pet
+          operationId: showPetById
+          tags:
+            - pets
+          parameters:
+            - name: petId
+              in: path
+              required: true
+              description: The id of the pet to retrieve
+              schema:
+                type: string
+          responses:
+            '200':
+              description: Expected response to a valid request
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Pet"
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error"
+    components:
+      schemas:
+        Pet:
+          type: object
+          required:
+            - id
+            - name
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            tag:
+              type: string
+        Pets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pet"
+        Error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: integer
+              format: int32
+            message:
+              type: string
 
