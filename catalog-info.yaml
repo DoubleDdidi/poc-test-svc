@@ -16,6 +16,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
+  partOf: accenture-poc-svc
   owner: team-c
   definition: |
     openapi: "3.0.0"
