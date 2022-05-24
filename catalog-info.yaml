@@ -19,11 +19,6 @@ spec:
   owner: user:guest
   dependsOn: accenture-poc-svc
   definition: |
-    type: openapi
-  lifecycle: experimental
-  owner: user:guest
-  dependsOn: accenture-poc-svc
-  definition: |
     openapi: "3.0.0"
     info:
       version: 1.0.0
@@ -135,4 +130,3 @@ spec:
               format: int32
             message:
               type: string
-
